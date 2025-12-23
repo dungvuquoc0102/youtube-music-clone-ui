@@ -1,9 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
 :root {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-roboto: "Roboto", sans-serif;
+  --layout-background-image: url("/img/bg01.jpg");
+  --overlay-background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.6),
+    #030303
+  );
+  --sidebar-border-right-color: rgba(255, 255, 255, 0.15);
+  --sidebar-background-color: #0d0d0d;
   --paper-slider-active-color: linear-gradient(
     to right,
     #f03 80%,
@@ -12,6 +19,10 @@
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-roboto);
   font-size: 16px;
+  user-select: none;
+  background: #060606;
+  color: #fff;
+  overscroll-behavior: none;
 }

@@ -8,19 +8,19 @@ export default function router() {
   router
     .on("/", () => {
       // Render HTML
-      document.querySelector("#main-content").innerHTML = home();
+      document.querySelector("#js-main-content").innerHTML = home();
       // Run JS
       homeScript();
     })
     .on("/explore", () => {
-      document.querySelector("#main-content").innerHTML = explore();
+      document.querySelector("#js-main-content").innerHTML = explore();
     })
     .on("/moods/:slug", ({ data }) => {
       const slug = data.slug;
       console.log(slug);
     })
     .on("/albums/:slug", ({ data }) => {
-      document.querySelector("#main-content").innerHTML = album();
+      document.querySelector("#js-main-content").innerHTML = album();
       const slug = data.slug;
       albumScript(slug);
     });

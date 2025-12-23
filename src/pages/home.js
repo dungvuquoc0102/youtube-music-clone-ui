@@ -3,9 +3,28 @@ import instance from "../httpRequest";
 export default function home() {
   // Step 1
   return /* html */ `
-<div>
-  <div class="js-moods flex gap-3"></div>
-  <div class="js-albums flex gap-3 flex-wrap shadow-2xl p-4 m-4"></div>
+<div class="container mx-auto">
+  <div class="mx-25">
+    <div class="js-moods flex gap-3 flex-wrap shadow-2xl pt-10 text-[14px]"></div>
+    <div class="pt-10">
+      <div class="text-[28px] font-semibold">
+        <span>Albums for you</span>
+        <div>
+          <div class="flex items-center justify-center size-9 fill-current border-1 rounded-full">
+            <div class="size-[18px]">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="M13.793 5.293 7.086 12l6.707 6.707a1 1 0 101.414-1.414L9.914 12l5.293-5.293a1 1 0 10-1.414-1.414Z"></path></svg>
+            </div>
+          </div>
+          <div class="flex items-center justify-center size-9 fill-current border-1 rounded-full">
+            <div class="size-[18px]">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="M8.793 5.293a1 1 0 000 1.414L14.086 12l-5.293 5.293a1 1 0 101.414 1.414L16.914 12l-6.707-6.707a1 1 0 00-1.414 0Z"></path></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="js-albums flex gap-3 overflow-x-auto"></div>
+    </div>
+  </div>
 </div>
 `;
 }
@@ -22,7 +41,7 @@ export function homeScript() {
       .map(
         (mood) => `
       <div>
-        <a href="/moods/${mood.slug}" data-navigo>${mood.name}</a>
+        <a class="p-3 rounded-lg bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.2)]" href="/moods/${mood.slug}" data-navigo>${mood.name}</a>
       </div>
     `
       )
