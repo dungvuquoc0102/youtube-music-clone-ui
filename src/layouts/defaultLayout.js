@@ -3,7 +3,7 @@ import controls from "../components/controls";
 import header from "../components/header";
 
 async function mainContent() {
-  const response = await fetch("/src/layouts/mainContent.html");
+  const response = await fetch(`/templates/mainContent.html`);
   const mainContentHTML = await response.text();
   return mainContentHTML;
 }
@@ -13,6 +13,8 @@ export default async function defaultLayout() {
   const controlsString = controls();
   const sidebarString = sidebar();
   const mainContentString = await mainContent();
+
+  console.log(mainContentString);
 
   return /* html */ `
 <div class="relative h-dvh">
