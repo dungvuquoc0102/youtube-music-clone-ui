@@ -2,21 +2,19 @@ import router from "../router";
 
 export default function sidebar() {
   return /* html */ `
-<nav class="fixed left-0 top-0 bottom-0 bg-(--sidebar-background-color) w-60 border-r-2 border-(--sidebar-border-right-color) pt-18">
+<nav class="fixed left-0 top-0 bottom-0 bg-(--sidebar-background-color) w-60 border-r-1 border-(--sidebar-border-right-color) pt-18">
   <div class="absolute top-0 left-0 right-0 h-16 flex items-center px-6">
-      <span class="inline-block w-6 mr-5 fill-current">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="M20 5H4a1 1 0 000 2h16a1 1 0 100-2Zm0 6H4a1 1 0 000 2h16a1 1 0 000-2Zm0 6H4a1 1 0 000 2h16a1 1 0 000-2Z"></path></svg>  
-      </span>
-      <span>
-        <img src="/img/logo.svg" alt="Logo" class="h-6" />
-      </span>
+      
   </div>
   <ul class="flex flex-col px-2">
     <li>
-      <a class="block px-4 rounded-lg min-h-12" href="/" data-navigo>
-        <span class="inline-block w-6 mr-5 fill-current">
+      <a class="flex items-center px-4 rounded-lg min-h-12" href="/" data-navigo>
+        <div class="w-6 mr-5 fill-current">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="m11.485 2.143-8 4.8-2 1.2a1 1 0 001.03 1.714L3 9.567V20a2 2 0 002 2h6v-7h2v7h6a2 2 0 002-2V9.567l.485.29a1 1 0 001.03-1.714l-2-1.2-8-4.8a1 1 0 00-1.03 0ZM5 8.366l7-4.2 7 4.2V20h-4v-5.5a1.5 1.5 0 00-1.5-1.5h-3A1.5 1.5 0 009 14.5V20H5V8.366Z"></path></svg>
+        </div>
+        <div class="w-6 mr-5 fill-current hidden">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="m11.485 2.143-8 4.8-2 1.2a1 1 0 001.03 1.714L3 9.567V20a2 2 0 002 2h5v-8h4v8h5a2 2 0 002-2V9.567l.485.29a1 1 0 001.03-1.714l-2-1.2-8-4.8a1 1 0 00-1.03 0Z"></path></svg>
-        </span>
+        </div>
         <span>Home</span>
       </a>
     </li>

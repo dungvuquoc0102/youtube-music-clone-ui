@@ -1,8 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
 :root {
   --font-roboto: "Roboto", sans-serif;
+  --font-google: "Google Sans", sans-serif;
+  --text-secondary-color: rgba(255, 255, 255, 0.7);
   --layout-background-image: url("/img/bg01.jpg");
   --overlay-background-image: linear-gradient(
     to bottom,
@@ -11,11 +13,18 @@
   );
   --sidebar-border-right-color: rgba(255, 255, 255, 0.15);
   --sidebar-background-color: #0d0d0d;
+  --search-box-text-color: rgba(255, 255, 255, 0.5);
+  --items-button-hover-background-color: rgba(255, 255, 255, 0.1);
+  --items-button-border-color: rgba(255, 255, 255, 0.2);
   --paper-slider-active-color: linear-gradient(
     to right,
     #f03 80%,
     #ff2791 100%
   );
+}
+
+* {
+  scrollbar-color: #606060 transparent;
 }
 
 body {
