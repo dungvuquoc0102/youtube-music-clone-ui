@@ -1,5 +1,5 @@
 import { controlsScript } from "./components/controls";
-import defaultLayout from "./layouts/DefaultLayout";
+import defaultLayout from "./layouts/defaultLayout";
 import router from "./router";
 import "./style.css";
 
