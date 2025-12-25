@@ -3,7 +3,7 @@ import { appStatus } from "../main";
 export default function controls() {
   // Step 1
   return /* html */ `
-<div class="controls fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-gray-300">
+<div class="js-controls fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-gray-300" hidden>
   <div class="player-page">
   </div>
   <div class="player-bar flex gap-3">

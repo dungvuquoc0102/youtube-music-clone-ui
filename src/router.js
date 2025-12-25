@@ -1,6 +1,8 @@
 import explore from "./pages/explore";
+import library from "./pages/library";
+import upgrade from "./pages/upgrade";
 import home, { homeScript } from "./pages/home";
-import album, { albumScript } from "./pages/album";
+import playlist, { playlistScript } from "./pages/playlist";
 import Navigo from "navigo";
 
 export default function router() {
@@ -15,14 +17,15 @@ export default function router() {
     .on("/explore", () => {
       document.querySelector("#js-main-content").innerHTML = explore();
     })
-    .on("/moods/:slug", ({ data }) => {
-      const slug = data.slug;
-      console.log(slug);
+    .on("/library", () => {
+      document.querySelector("#js-main-content").innerHTML = library();
     })
-    .on("/albums/:slug", ({ data }) => {
-      document.querySelector("#js-main-content").innerHTML = album();
-      const slug = data.slug;
-      albumScript(slug);
+    .on("/upgrade", () => {
+      document.querySelector("#js-main-content").innerHTML = upgrade();
+    })
+    .on("/playlists/:slug", async ({ data, params }) => {
+      document.querySelector("#js-main-content").innerHTML = playlist();
+      await playlistScript({ data, params });
     });
   router.resolve();
 }

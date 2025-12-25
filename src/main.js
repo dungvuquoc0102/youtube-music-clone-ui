@@ -1,5 +1,4 @@
-import { controlsScript } from "./components/controls";
-import defaultLayout from "./layouts/defaultLayout";
+import defaultLayout, { defaultLayoutScript } from "./layouts/defaultLayout";
 import router from "./router";
 import "./style.css";
 
@@ -13,8 +12,20 @@ window.appStatus = appStatus;
 
 async function app() {
   document.body.innerHTML = await defaultLayout();
-  controlsScript();
+  defaultLayoutScript();
   router();
+  document.addEventListener(
+    "error",
+    function (e) {
+      if (e.target.tagName.toLowerCase() === "img") {
+        const placeholder = "/img/placeholder.jpg";
+        if (e.target.src !== placeholder) {
+          e.target.src = placeholder;
+        }
+      }
+    },
+    true
+  );
 }
 
 app();

@@ -1,6 +1,6 @@
 export default function header() {
   return /* html */ `
-<header class="fixed top-0 left-0 right-0 h-16 flex items-center">
+<header class="fixed top-0 left-0 right-0 h-16 flex items-center border-b-1 border-b-transparent">
   <!-- Left section -->
   <div class="h-16 w-60 flex items-center px-4">
       <div class="flex items-center justify-center hover:bg-(--items-button-hover-background-color) size-10 rounded-full mr-5">
@@ -13,7 +13,7 @@ export default function header() {
       </a>
   </div>
   <!-- Center section -->
-  <div class="w-[calc(100%-240px)] flex justify-center items-center">
+  <div class="w-[calc(100%-240px)] flex justify-center items-center relative">
     <div class="container mx-auto">
       <div class="mx-25 flex">
         <!-- Search box -->
@@ -26,7 +26,7 @@ export default function header() {
           </div>
         </div>
         <!-- User actions -->
-        <div class="flex items-center ml-auto space-x-6">
+        <div class="flex items-center ml-auto space-x-6 absolute right-25 top-1/2 transform -translate-y-1/2 ">
           <div class="inline-block w-6 h-6 fill-current cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="M21 3H3a2 2 0 00-2 2v3c.67 0 1.337.051 2 .153V5h18v14h-7.153c.1.653.152 1.32.153 2h7a2 2 0 002-2V5a2 2 0 00-2-2ZM1 10v2a9 9 0 019 9h2A11 11 0 001 10Zm0 4v2a5 5 0 015 5h2a7 7 0 00-7-7Zm0 4v3h3a3.003 3.003 0 00-3-3Z"></path></svg>
           </div>
@@ -39,4 +39,26 @@ export default function header() {
   </div>
 </header>  
 `;
+}
+
+export function headerScript() {
+  // const wrapperEl = document.querySelector(".js-main-wrapper");
+  // console.log("he");
+  // wrapperEl.addEventListener("scroll", (event) => {
+  //   console.log("he");
+  //   const headerEl = document.querySelector("header");
+  //   if (wrapperEl.scrollTop > 0) {
+  //     headerEl.classList.add(
+  //       "bg-(--header-background-color)",
+  //       "border-b-(--header-border-bottom-color)"
+  //     );
+  //     headerEl.classList.remove("border-b-transparent");
+  //   } else {
+  //     headerEl.classList.remove(
+  //       "bg-(--header-background-color)",
+  //       "border-b-(--header-border-bottom-color)"
+  //     );
+  //     headerEl.classList.add("border-b-transparent");
+  //   }
+  // });
 }
