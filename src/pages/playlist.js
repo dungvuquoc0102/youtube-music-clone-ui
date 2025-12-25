@@ -1,5 +1,6 @@
 import instance from "../httpRequest";
-import { appStatus } from "../main";
+import { appStatus, updatePlayPauseUI } from "../main";
+import { formatTimeDigital, formatTimeText } from "../utils/formatTime";
 
 export default function playlist() {
   return /* html */ `
@@ -10,20 +11,6 @@ export default function playlist() {
   <div class="js-songs w-[70%]"></div>
 </div>
 `;
-}
-
-function togglePlayPauseButtons(isPlaying) {
-  console.log(isPlaying);
-
-  const playButton = document.querySelector(".play-button");
-  const pauseButton = document.querySelector(".pause-button");
-  if (isPlaying) {
-    playButton.classList.add("hidden");
-    pauseButton.classList.remove("hidden");
-  } else {
-    playButton.classList.remove("hidden");
-    pauseButton.classList.add("hidden");
-  }
 }
 
 async function getPLayListDetail({ data, params }) {
@@ -68,59 +55,47 @@ function playlistInfo(playlist) {
 `;
 }
 
-function formatTimeText(totalSeconds) {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return `${hours} hours ${minutes} minutes`;
-  } else if (minutes > 0) {
-    return `${minutes} minutes`;
-  } else {
-    return `${seconds} seconds`;
-  }
-}
-
-function formatTimeDigital(totalSeconds) {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  const pad = (num) => String(num).padStart(2, "0");
-
-  if (hours > 0) {
-    // Định dạng hh:mm:ss -> 01:05:09
-    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  } else if (minutes > 0) {
-    // Định dạng mm:ss -> 05:09
-    return `${pad(minutes)}:${pad(seconds)}`;
-  } else {
-    // Định dạng 00:ss -> 00:09
-    return `00:${pad(seconds)}`;
-  }
-}
-
-function songs(songs) {
+function songs(playlist) {
+  const songs = playlist.tracks;
+  // Add active status to the current playing song
+  songs.map((song) => {
+    if (song.audioUrl === appStatus.song && playlist.id === appStatus.songsId) {
+      song.isActive = true;
+    } else {
+      song.isActive = false;
+    }
+  });
   return /* html */ `
 <div class="p-8 space-y-4">
   ${songs
     .map(
-      (song, index) => `
-    <div class="flex items-center justify-between hover:bg-[rgba(255,255,255,0.1)] rounded-lg p-4 cursor-pointer js-playlist-detail" data-audio-url=${
-      song.audioUrl
-    }>
+      (song) => `
+    <div class="js-song-item flex items-center justify-between p-4 ${
+      song.isActive ? "bg-(--song-active-background-color)" : ""
+    } rounded-lg">
       <div class="flex items-center gap-4">
-        <div>
+        <div class="relative group cursor-pointer rounded-sm overflow-hidden js-song-image" data-audio-url=${
+          song.audioUrl
+        }>
           <img src="${song.thumbnails[0]}" alt="${
         song.title
-      }" class="w-12 h-12 object-cover rounded-lg" />
+      }" class="w-12 h-12 object-cover"/>
+          <div class="js-play-button hidden group-hover:flex absolute inset-[-2px] items-center justify-center bg-(--songs-img-backround-color)">
+            <div class="size-6 fill-white">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="M5 4.623V19.38a1.5 1.5 0 002.26 1.29L22 12 7.26 3.33A1.5 1.5 0 005 4.623Z"></path></svg>
+            </div>
+            <div class="size-6 fill-white ${song.isActive ? "" : "hidden"}">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" aria-hidden="true" style="pointer-events: none; display: inherit; width: 100%; height: 100%;"><path d="M6.5 3A1.5 1.5 0 005 4.5v15A1.5 1.5 0 006.5 21h2a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 008.5 3h-2Zm9 0A1.5 1.5 0 0014 4.5v15a1.5 1.5 0 001.5 1.5h2a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0017.5 3h-2Z"></path></svg>
+            </div>
+          </div>
         </div>
         <div>
-          <div class="text-white font-medium">${song.title}</div>
-          <div class="text-(--text-secondary-color) text-sm">${song.artists.join(
-            ", "
-          )}</div>
+          <a href="#!" class="text-white font-medium js-song-title" data-audio-url=${
+            song.audioUrl
+          }>${song.title}</a>
+          <div class="text-(--text-secondary-color) text-sm hover:underline cursor-pointer">${
+            song.artists.join(", ") || "Không rõ nghệ sĩ"
+          }</div>
         </div>
       </div>
       <div class="text-(--text-secondary-color) text-sm">${formatTimeDigital(
@@ -145,47 +120,41 @@ export async function playlistScript({ data, params }) {
   const songsContainer = document.querySelector(".js-songs");
 
   playlistInfoContainer.innerHTML = playlistInfo(playlist);
-  songsContainer.innerHTML = songs(playlist.tracks);
+  songsContainer.innerHTML = songs(playlist);
 
   songsContainer.addEventListener("click", (event) => {
-    const songDetailEl = event.target.closest(".js-playlist-detail");
-    if (songDetailEl) {
-      const controlsEl = document.querySelector(".js-controls");
-      if (controlsEl.hidden) {
-        controlsEl.hidden = false;
-      } // if this song same as current song => play -> pause and pause -> play
-      const audioUrl = songDetailEl.getAttribute("data-audio-url");
-      if (appStatus.song === audioUrl) {
-        const audioPlayer = document.querySelector(".js-audio-player");
-        if (appStatus.isPlaying) {
-          audioPlayer.pause();
-        } else {
-          audioPlayer.play();
-        }
-        appStatus.isPlaying = !appStatus.isPlaying;
-      } else {
-        appStatus.song = audioUrl;
-        appStatus.isPlaying = true;
-        const audioPlayer = document.querySelector(".js-audio-player");
-        audioPlayer.src = audioUrl;
-        audioPlayer.play();
+    const triggerEl = event.target.closest(".js-song-image, .js-song-title");
+    if (!triggerEl) return;
 
-        // Update duration display
-        audioPlayer.addEventListener("loadedmetadata", () => {
-          const durationEl = document.querySelector(".js-time-info .duration");
-          const totalDuration = Math.floor(audioPlayer.duration);
-          const minutes = Math.floor(totalDuration / 60);
-          const seconds = totalDuration % 60;
-          durationEl.textContent = `${minutes}:${
-            seconds < 10 ? "0" : ""
-          }${seconds}`;
-        });
-
-        // Update appStatus.songs
-        appStatus.songs = playlist.tracks.map((song) => song.audioUrl);
-      }
-      // Update play/pause button state
-      togglePlayPauseButtons(appStatus.isPlaying);
+    // Show controls if hidden
+    const controlsEl = document.querySelector(".js-controls");
+    if (controlsEl.hidden) {
+      controlsEl.hidden = false;
     }
+
+    const audioUrl = triggerEl.getAttribute("data-audio-url");
+    const audioPlayer = document.querySelector(".js-audio-player");
+    if (appStatus.song === audioUrl) {
+      // Toggle play/pause if the same song is clicked
+      // Update appStatus state
+      appStatus.isPlaying = !appStatus.isPlaying;
+
+      // Update audio player
+      appStatus.isPlaying ? audioPlayer.play() : audioPlayer.pause();
+    } else {
+      // Play the selected song if it's different from the current one
+      // Update appStatus state
+      appStatus.isPlaying = true;
+      appStatus.song = audioUrl;
+      appStatus.songs = playlist.tracks.map((song) => song.audioUrl);
+      appStatus.songsId = playlist.id;
+
+      // Update audio player
+      audioPlayer.src = audioUrl;
+      audioPlayer.play();
+    }
+
+    // Update play/pause button state
+    updatePlayPauseUI();
   });
 }

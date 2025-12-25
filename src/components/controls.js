@@ -1,9 +1,10 @@
-import { appStatus } from "../main";
+import { appStatus, updatePlayPauseUI } from "../main";
+import { formatTimeDigital } from "../utils/formatTime";
 
 export default function controls() {
   // Step 1
   return /* html */ `
-<div class="js-controls fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-gray-300" hidden>
+<div class="js-controls fixed z-[100] bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-gray-300" hidden>
   <div class="player-page">
   </div>
   <div class="player-bar flex gap-3">
@@ -35,7 +36,7 @@ export default function controls() {
     </div>
     <div class="slider">
       <audio class="js-audio-player" src=""></audio>
-      <div class="js-slider-bar absolute top-0 left-0 right-0 bg-gray-300 h-[2px]">
+      <div class="js-slider-bar absolute top-0 left-0 right-0 bg-gray-300 h-[2px] cursor-pointer">
         <div class="js-slider-fill bg-(image:--paper-slider-active-color) h-1 w-0"></div>
       </div>
       <span class="js-current-time">0:00</span>
@@ -44,18 +45,6 @@ export default function controls() {
   </div>
 </div>
 `;
-}
-
-function togglePlayPauseButtons(isPlaying) {
-  const playButton = document.querySelector(".play-button");
-  const pauseButton = document.querySelector(".pause-button");
-  if (isPlaying) {
-    playButton.classList.add("hidden");
-    pauseButton.classList.remove("hidden");
-  } else {
-    playButton.classList.remove("hidden");
-    pauseButton.classList.add("hidden");
-  }
 }
 
 export function controlsScript() {
@@ -68,27 +57,84 @@ export function controlsScript() {
 
   playButton.addEventListener("click", () => {
     if (!appStatus.song) return;
+
+    // Update appStatus state
+    appStatus.isPlaying = true;
+
+    // Update audio player
     audioPlayer.play();
-    playButton.classList.add("hidden");
-    pauseButton.classList.remove("hidden");
+
+    // Update UI
+    updatePlayPauseUI();
   });
+
   pauseButton.addEventListener("click", () => {
+    // Update appStatus state
+    appStatus.isPlaying = false;
+
+    // Update audio player
     audioPlayer.pause();
-    pauseButton.classList.add("hidden");
-    playButton.classList.remove("hidden");
+
+    // Update UI
+    updatePlayPauseUI();
+  });
+
+  prevButton.addEventListener("click", () => {
+    if (appStatus.songs.length === 0) return;
+
+    // Update audio player
+    appStatus.isPlaying = true;
+    if (appStatus.song === null) {
+      appStatus.song = appStatus.songs[0];
+    } else {
+      const currentIndex = appStatus.songs.findIndex(
+        (song) => song === audioPlayer.src
+      );
+      appStatus.song =
+        appStatus.songs[
+          (currentIndex - 1 + appStatus.songs.length) % appStatus.songs.length
+        ];
+    }
+
+    // Update audio player
+    audioPlayer.src = appStatus.song;
+    audioPlayer.play();
+
+    // Update UI
+    updatePlayPauseUI();
+  });
+
+  nextButton.addEventListener("click", () => {
+    if (appStatus.songs.length === 0) return;
+
+    // Update appStatus state
+    appStatus.isPlaying = true;
+    if (appStatus.song === null) {
+      appStatus.song = appStatus.songs[0];
+    } else {
+      appStatus.song =
+        appStatus.songs[
+          (appStatus.songs.findIndex((song) => song === audioPlayer.src) + 1) %
+            appStatus.songs.length
+        ];
+    }
+
+    // Update audio player
+    audioPlayer.src = appStatus.song;
+    audioPlayer.play();
+
+    // Update UI
+    updatePlayPauseUI();
   });
 
   audioPlayer.addEventListener("timeupdate", () => {
+    // Update current time display
     const currentTimeEl = document.querySelector(".js-time-info .current-time");
+    currentTimeEl.textContent = formatTimeDigital(
+      Math.floor(audioPlayer.currentTime)
+    );
 
-    const totalSeconds = Math.floor(audioPlayer.currentTime);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    currentTimeEl.textContent = `${minutes}:${
-      seconds < 10 ? "0" : ""
-    }${seconds}`;
-
-    // caculate slider fill width
+    // Update slider fill width
     const sliderFill = document.querySelector(".js-slider-fill");
     const sliderKnob = document.querySelector(".js-slider-knob");
     const sliderBar = document.querySelector(".js-slider-bar");
@@ -101,32 +147,19 @@ export function controlsScript() {
     }px)`;
   });
 
-  prevButton.addEventListener("click", () => {
-    if (appStatus.songs.length === 0) return;
-    if (appStatus.song === null)
-      appStatus.song = appStatus.songs[appStatus.songs.length - 1];
-    audioPlayer.src =
-      appStatus.songs[
-        (appStatus.songs.findIndex((song) => song === audioPlayer.src) -
-          1 +
-          appStatus.songs.length) %
-          appStatus.songs.length
-      ];
-    audioPlayer.play();
-    togglePlayPauseButtons(true);
-    appStatus.song = audioPlayer.src;
+  audioPlayer.addEventListener("loadedmetadata", () => {
+    const durationEl = document.querySelector(".js-time-info .duration");
+    durationEl.textContent = formatTimeDigital(
+      Math.floor(audioPlayer.duration)
+    );
   });
 
-  nextButton.addEventListener("click", () => {
-    if (appStatus.songs.length === 0) return;
-    if (appStatus.song === null) appStatus.song = appStatus.songs[0];
-    audioPlayer.src =
-      appStatus.songs[
-        (appStatus.songs.findIndex((song) => song === audioPlayer.src) + 1) %
-          appStatus.songs.length
-      ];
-    audioPlayer.play();
-    togglePlayPauseButtons(true);
-    appStatus.song = audioPlayer.src;
+  // js-slider-bar click to seek
+  const sliderBar = document.querySelector(".js-slider-bar");
+  sliderBar.addEventListener("click", (event) => {
+    const rect = sliderBar.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const newTime = (clickX / rect.width) * audioPlayer.duration;
+    audioPlayer.currentTime = newTime;
   });
 }

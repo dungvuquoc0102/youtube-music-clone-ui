@@ -21,6 +21,8 @@
   --items-background-color: rgba(255, 255, 255, 0.1);
   --items-hover-background-color: rgba(255, 255, 255, 0.2);
   --items-button-border-color: rgba(255, 255, 255, 0.2);
+  --songs-img-backround-color: rgba(0, 0, 0, 0.8);
+  --song-active-background-color: rgba(255, 255, 255, 0.1);
   --paper-slider-active-color: linear-gradient(
     to right,
     #f03 80%,

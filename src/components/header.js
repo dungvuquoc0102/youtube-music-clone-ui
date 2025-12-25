@@ -42,23 +42,21 @@ export default function header() {
 }
 
 export function headerScript() {
-  // const wrapperEl = document.querySelector(".js-main-wrapper");
-  // console.log("he");
-  // wrapperEl.addEventListener("scroll", (event) => {
-  //   console.log("he");
-  //   const headerEl = document.querySelector("header");
-  //   if (wrapperEl.scrollTop > 0) {
-  //     headerEl.classList.add(
-  //       "bg-(--header-background-color)",
-  //       "border-b-(--header-border-bottom-color)"
-  //     );
-  //     headerEl.classList.remove("border-b-transparent");
-  //   } else {
-  //     headerEl.classList.remove(
-  //       "bg-(--header-background-color)",
-  //       "border-b-(--header-border-bottom-color)"
-  //     );
-  //     headerEl.classList.add("border-b-transparent");
-  //   }
-  // });
+  const wrapperEl = document.querySelector(".js-main-wrapper");
+  wrapperEl.addEventListener("scroll", (event) => {
+    const headerEl = document.querySelector("header");
+    if (wrapperEl.scrollTop > 0) {
+      headerEl.classList.add(
+        "bg-(--header-background-color)",
+        "border-b-(--header-border-bottom-color)"
+      );
+      headerEl.classList.remove("border-b-transparent");
+    } else {
+      headerEl.classList.remove(
+        "bg-(--header-background-color)",
+        "border-b-(--header-border-bottom-color)"
+      );
+      headerEl.classList.add("border-b-transparent");
+    }
+  });
 }
