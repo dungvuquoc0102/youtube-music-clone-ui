@@ -17,12 +17,16 @@
   --search-box-text-color: rgba(255, 255, 255, 0.5);
   --header-background-color: #0d0d0d;
   --header-border-bottom-color: rgba(255, 255, 255, 0.15);
+  --controls-background-color: rgba(33, 33, 33, 1);
+  --controls-progress-background-color: rgba(84, 84, 84, 1);
+  --controls-button-hover-background-color: rgba(255, 0, 51, 1);
   --items-button-hover-background-color: rgba(255, 255, 255, 0.1);
   --items-background-color: rgba(255, 255, 255, 0.1);
   --items-hover-background-color: rgba(255, 255, 255, 0.2);
   --items-button-border-color: rgba(255, 255, 255, 0.2);
   --songs-img-backround-color: rgba(0, 0, 0, 0.8);
   --song-active-background-color: rgba(255, 255, 255, 0.1);
+  --link-color: rgba(0, 147, 252, 1);
   --paper-slider-active-color: linear-gradient(
     to right,
     #f03 80%,

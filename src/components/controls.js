@@ -4,7 +4,7 @@ import { formatTimeDigital } from "../utils/formatTime";
 export default function controls() {
   // Step 1
   return /* html */ `
-<div class="js-controls fixed z-[100] bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-gray-300" hidden>
+<div class="fixed js-controls group bg-(--controls-background-color) z-[100] bottom-0 left-0 right-0 h-18" hidden>
   <div class="player-page">
   </div>
   <div class="player-bar flex gap-3">
@@ -29,18 +29,23 @@ export default function controls() {
         <span class="current-time">0:00</span> / <span class="duration">0:00</span>
       </div>
     </div>
-    <div class="center-controls">
-      
-    </div>
-    <div class="right-controls">
-    </div>
+    <div class="center-controls"></div>
+    <div class="right-controls"></div>
     <div class="slider">
       <audio class="js-audio-player" src=""></audio>
-      <div class="js-slider-bar absolute top-0 left-0 right-0 bg-gray-300 h-[2px] cursor-pointer">
-        <div class="js-slider-fill bg-(image:--paper-slider-active-color) h-1 w-0"></div>
+      <div class="absolute js-slider-bar -top-3 left-0 right-0 py-3 cursor-pointer group/progress">
+        <!-- Slider background -->
+        <div class="relative bg-(--controls-progress-background-color) h-[2px]">
+          <!-- Sclider background hover -->
+          <div class="absolute inset-0 bg-(--controls-progress-background-color) h-[4px] opacity-0 group-hover/progress:opacity-100 group-hover/progress:top-[-1px]"></div>
+          <!-- Slider fill -->
+          <div class="absolute js-slider-fill bg-(image:--paper-slider-active-color) w-0 h-[2px] group-hover/progress:h-1 group-hover/progress:top-[-1px]"></div>
+        </div>
+        <!-- Time info -->
+        <div class="absolute -top-5 js-current-time hidden group-hover/progress:block text-[12px] bg-(--controls-background-color) px-2 py-1 rounded-xs">00:00</div>
+        <!-- Slider knob -->
+        <div class="absolute top-[6px] js-slider-knob size-[14px] bg-(--controls-button-hover-background-color) rounded-full hidden group-hover:block"></div>
       </div>
-      <span class="js-current-time">0:00</span>
-      <span class="js-slider-knob">●</span>
     </div>
   </div>
 </div>
@@ -145,6 +150,10 @@ export function controlsScript() {
     sliderKnob.style.left = `calc(${progressPercent}% - ${
       (progressPercent / 100) * sliderBarWidth
     }px)`;
+
+    // Update knob position
+    const knobOffset = (progressPercent / 100) * sliderBarWidth;
+    sliderKnob.style.left = `calc(${progressPercent}% - 7px)`;
   });
 
   audioPlayer.addEventListener("loadedmetadata", () => {
@@ -161,5 +170,27 @@ export function controlsScript() {
     const clickX = event.clientX - rect.left;
     const newTime = (clickX / rect.width) * audioPlayer.duration;
     audioPlayer.currentTime = newTime;
+  });
+
+  // js-slider-bar hover to show current time and tranform position
+  const currentTimeHover = document.querySelector(".js-current-time");
+  sliderBar.addEventListener("mousemove", (event) => {
+    const rect = sliderBar.getBoundingClientRect();
+    const hoverX = event.clientX - rect.left;
+    const hoverTime = (hoverX / rect.width) * audioPlayer.duration;
+    currentTimeHover.textContent = formatTimeDigital(Math.floor(hoverTime));
+
+    // Transform position
+    let leftPos = hoverX - currentTimeHover.clientWidth / 2;
+    if (leftPos < 0) leftPos = 0;
+    if (leftPos + currentTimeHover.clientWidth > rect.width) {
+      leftPos = rect.width - currentTimeHover.clientWidth;
+    }
+    currentTimeHover.style.left = `${leftPos}px`;
+  });
+
+  sliderBar.addEventListener("mouseleave", () => {
+    currentTimeHover.textContent = "00:00";
+    currentTimeHover.style.left = `0px`;
   });
 }

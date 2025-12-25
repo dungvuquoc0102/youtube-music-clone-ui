@@ -62,11 +62,7 @@ export function updatePlayPauseUI() {
       .querySelector(".js-song-image")
       .getAttribute("data-audio-url");
     if (audioUrl === appStatus.song) {
-      if (appStatus.isPlaying) {
-        item.classList.add("bg-(--song-active-background-color)");
-      } else {
-        item.classList.remove("bg-(--song-active-background-color)");
-      }
+      item.classList.add("bg-(--song-active-background-color)");
     } else {
       item.classList.remove("bg-(--song-active-background-color)");
     }
@@ -74,7 +70,8 @@ export function updatePlayPauseUI() {
 }
 
 async function app() {
-  document.body.innerHTML = await defaultLayout();
+  const appEl = document.querySelector("#app");
+  appEl.innerHTML = await defaultLayout();
   defaultLayoutScript();
   router();
   document.addEventListener(

@@ -4,6 +4,7 @@ import upgrade from "./pages/upgrade";
 import home, { homeScript } from "./pages/home";
 import playlist, { playlistScript } from "./pages/playlist";
 import Navigo from "navigo";
+import notFound from "./pages/notFound";
 
 export default function router() {
   const router = new Navigo("/");
@@ -26,6 +27,9 @@ export default function router() {
     .on("/playlists/:slug", async ({ data, params }) => {
       document.querySelector("#js-main-content").innerHTML = playlist();
       await playlistScript({ data, params });
+    })
+    .on("*", () => {
+      document.querySelector("#app").innerHTML = notFound();
     });
   router.resolve();
 }
