@@ -4,9 +4,8 @@ import "./style.css";
 
 export const appStatus = {
   isPlaying: false,
-  song: null,
-  songs: [],
-  songsId: null,
+  song: null, // Lưu object của bài hát hiện tại: {id, title, audioUrl, artists, thumbnails, duration}
+  songs: null, // Lưu object của playlist: {id, title, type, tracks: [{id, title, audioUrl, ...}]}
 };
 
 window.appStatus = appStatus;
@@ -25,10 +24,10 @@ export function updatePlayPauseUI() {
   // Playlist icon
   const songItems = document.querySelectorAll(".js-song-image");
   songItems.forEach((item) => {
-    const audioUrl = item.getAttribute("data-audio-url");
+    const songId = item.getAttribute("data-id");
     const playBtn = item.querySelector(".js-play-button > div:first-child");
     const pauseBtn = item.querySelector(".js-play-button > div:last-child");
-    if (audioUrl === appStatus.song) {
+    if (appStatus.song && songId === String(appStatus.song.id)) {
       if (appStatus.isPlaying) {
         playBtn.classList.add("hidden");
         pauseBtn.classList.remove("hidden");
@@ -44,10 +43,8 @@ export function updatePlayPauseUI() {
   // Playlist overplay img
   const songItemButtons = document.querySelectorAll(".js-play-button");
   songItemButtons.forEach((button) => {
-    const audioUrl = button
-      .closest(".js-song-image")
-      .getAttribute("data-audio-url");
-    if (audioUrl === appStatus.song) {
+    const songId = button.closest(".js-song-image").getAttribute("data-id");
+    if (appStatus.song && songId === String(appStatus.song.id)) {
       button.classList.remove("hidden");
       button.classList.add("flex");
     } else {
@@ -58,10 +55,8 @@ export function updatePlayPauseUI() {
   // Playlist item background
   const songItemsContainer = document.querySelectorAll(".js-song-item");
   songItemsContainer.forEach((item) => {
-    const audioUrl = item
-      .querySelector(".js-song-image")
-      .getAttribute("data-audio-url");
-    if (audioUrl === appStatus.song) {
+    const songId = item.querySelector(".js-song-image").getAttribute("data-id");
+    if (appStatus.song && songId === String(appStatus.song.id)) {
       item.classList.add("bg-(--song-active-background-color)");
     } else {
       item.classList.remove("bg-(--song-active-background-color)");

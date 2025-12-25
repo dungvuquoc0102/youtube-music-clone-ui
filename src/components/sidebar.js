@@ -1,6 +1,6 @@
 export default function sidebar() {
   return /* html */ `
-<nav class="js-sidebar fixed left-0 top-0 bottom-0 bg-(--sidebar-background-color) w-(--sidebar-width) border-r-1 border-(--sidebar-border-right-color) pt-18">
+<nav class="js-sidebar fixed left-0 top-0 bottom-0 transition-transform transform -translate-x-full xl:translate-x-0 pt-18 bg-(--sidebar-background-color) w-(--sidebar-width) border-r-1 border-(--sidebar-border-right-color)">
   <div class="absolute top-0 left-0 right-0 h-16 flex items-center px-6"></div>
   <ul class="js-links not-only-of-type:flex flex-col px-2"></ul>
 </nav>

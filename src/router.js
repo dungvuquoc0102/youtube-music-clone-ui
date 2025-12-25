@@ -6,8 +6,11 @@ import playlist, { playlistScript } from "./pages/playlist";
 import Navigo from "navigo";
 import notFound from "./pages/notFound";
 
+export let routerInstance = null;
+
 export default function router() {
   const router = new Navigo("/");
+  routerInstance = router;
   router
     .on("/", () => {
       // Render HTML

@@ -57,9 +57,15 @@ function playlistInfo(playlist) {
 
 function songs(playlist) {
   const songs = playlist.tracks;
+
   // Add active status to the current playing song
   songs.map((song) => {
-    if (song.audioUrl === appStatus.song && playlist.id === appStatus.songsId) {
+    if (
+      appStatus.song &&
+      song.id === appStatus.song.id &&
+      appStatus.songs &&
+      playlist.id === appStatus.songs.id
+    ) {
       song.isActive = true;
     } else {
       song.isActive = false;
@@ -74,9 +80,9 @@ function songs(playlist) {
       song.isActive ? "bg-(--song-active-background-color)" : ""
     } rounded-lg">
       <div class="flex items-center gap-4">
-        <div class="relative group cursor-pointer rounded-sm overflow-hidden js-song-image" data-audio-url=${
-          song.audioUrl
-        }>
+        <div class="relative group cursor-pointer rounded-sm overflow-hidden js-song-image" data-id="${
+          song.id
+        }">
           <img src="${song.thumbnails[0]}" alt="${
         song.title
       }" class="w-12 h-12 object-cover"/>
@@ -90,9 +96,9 @@ function songs(playlist) {
           </div>
         </div>
         <div>
-          <a href="#!" class="text-white font-medium js-song-title" data-audio-url=${
-            song.audioUrl
-          }>${song.title}</a>
+          <a href="#!" class="text-white font-medium js-song-title" data-id="${
+            song.id
+          }">${song.title}</a>
           <div class="text-(--text-secondary-color) text-sm hover:underline cursor-pointer">${
             song.artists.join(", ") || "Không rõ nghệ sĩ"
           }</div>
@@ -132,9 +138,17 @@ export async function playlistScript({ data, params }) {
       controlsEl.hidden = false;
     }
 
-    const audioUrl = triggerEl.getAttribute("data-audio-url");
+    // Lấy songId từ data-id
+    const songId = triggerEl.getAttribute("data-id");
+    // Tìm song object tương ứng trong playlist.tracks
+
+    const selectedSong = playlist.tracks.find((song) => song.id === songId);
+
+    if (!selectedSong) return;
+
     const audioPlayer = document.querySelector(".js-audio-player");
-    if (appStatus.song === audioUrl) {
+
+    if (appStatus.song && appStatus.song.id === selectedSong.id) {
       // Toggle play/pause if the same song is clicked
       // Update appStatus state
       appStatus.isPlaying = !appStatus.isPlaying;
@@ -145,16 +159,20 @@ export async function playlistScript({ data, params }) {
       // Play the selected song if it's different from the current one
       // Update appStatus state
       appStatus.isPlaying = true;
-      appStatus.song = audioUrl;
-      appStatus.songs = playlist.tracks.map((song) => song.audioUrl);
-      appStatus.songsId = playlist.id;
+      appStatus.song = selectedSong; // Lưu toàn bộ object của song
+      appStatus.songs = playlist; // Lưu toàn bộ playlist object (có tracks bên trong)
 
       // Update audio player
-      audioPlayer.src = audioUrl;
+      audioPlayer.src = selectedSong.audioUrl;
       audioPlayer.play();
     }
 
     // Update play/pause button state
     updatePlayPauseUI();
+    
+    // Update center controls to show new song info
+    if (window.updateCenterControls) {
+      window.updateCenterControls();
+    }
   });
 }

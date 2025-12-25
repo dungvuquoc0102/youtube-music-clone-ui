@@ -1,6 +1,6 @@
 export default function header() {
   return /* html */ `
-<header class="fixed top-0 left-0 right-0 h-16 flex items-center border-b-1 border-b-transparent">
+<header class="fixed z-[100] top-0 left-0 right-0 h-16 flex items-center border-b-1 border-b-transparent">
   <!-- Left section -->
   <div class="h-16 w-60 flex items-center px-4">
       <div class="flex items-center justify-center hover:bg-(--items-button-hover-background-color) size-10 rounded-full mr-5">

@@ -1,4 +1,5 @@
 import instance from "../httpRequest";
+import { routerInstance } from "../router";
 
 export default function home() {
   // Step 1
@@ -82,6 +83,11 @@ export function homeScript() {
     `
       )
       .join("");
+
+    // Cập nhật Navigo để nhận diện các links mới được render
+    if (routerInstance) {
+      routerInstance.updatePageLinks();
+    }
   }
 
   fetchMoods();
